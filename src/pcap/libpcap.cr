@@ -26,6 +26,7 @@ lib LibPcap
   fun pcap_open_dead_with_tstamp_precision(x0 : LibC::Int, x1 : LibC::Int, x2 : UInt) : PcapT
   fun pcap_open_offline_with_tstamp_precision(x0 : LibC::Char*, x1 : UInt, x2 : LibC::Char*) : PcapT
   fun pcap_open_offline(x0 : LibC::Char*, x1 : LibC::Char*) : PcapT
+
   struct X_IoFile
     _flags : LibC::Int
     _io_read_ptr : LibC::Char*
@@ -57,12 +58,15 @@ lib LibPcap
     _mode : LibC::Int
     _unused2 : LibC::Char[20]
   end
+
   type File = X_IoFile
+
   struct X_IoMarker
     _next : X_IoMarker*
     _sbuf : X_IoFile*
     _pos : LibC::Int
   end
+
   alias X__OffT = LibC::Long
   alias X_IoLockT = Void
   alias X__Off64T = LibC::Long
@@ -71,16 +75,20 @@ lib LibPcap
   fun pcap_close(x0 : PcapT)
   alias X__UChar = UInt8
   alias UChar = X__UChar
+
   struct PcapPkthdr
     ts : Timeval
     caplen : BpfUInt32
     len : BpfUInt32
   end
+
   alias PcapHandler = UChar*, PcapPkthdr*, UChar* -> Void
+
   struct Timeval
     tv_sec : X__TimeT
     tv_usec : X__SusecondsT
   end
+
   alias X__TimeT = LibC::Long
   alias X__SusecondsT = LibC::Long
   fun pcap_loop(x0 : PcapT, x1 : LibC::Int, x2 : PcapHandler, x3 : UChar*) : LibC::Int
@@ -88,33 +96,38 @@ lib LibPcap
   fun pcap_next(x0 : PcapT, x1 : PcapPkthdr*) : UChar*
   fun pcap_next_ex(x0 : PcapT, x1 : PcapPkthdr**, x2 : UChar**) : LibC::Int
   fun pcap_breakloop(x0 : PcapT)
+
   struct PcapStat
     ps_recv : UInt
     ps_drop : UInt
     ps_ifdrop : UInt
   end
+
   fun pcap_stats(x0 : PcapT, x1 : PcapStat*) : LibC::Int
+
   struct BpfProgram
     bf_len : UInt
     bf_insns : BpfInsn*
   end
+
   struct BpfInsn
     code : UShort
     jt : UChar
     jf : UChar
     k : BpfUInt32
-    #code : UShort
-    #jt : UChar
-    #jf : UChar
-    #k : BpfUInt32
+    # code : UShort
+    # jt : UChar
+    # jf : UChar
+    # k : BpfUInt32
   end
+
   alias X__UShort = LibC::UShort
   alias UShort = X__UShort
   fun pcap_setfilter(x0 : PcapT, x1 : BpfProgram*) : LibC::Int
   enum PcapDirectionT
     PcapDInout = 0
-    PcapDIn = 1
-    PcapDOut = 2
+    PcapDIn    = 1
+    PcapDOut   = 2
   end
   fun pcap_setdirection(x0 : PcapT, x1 : PcapDirectionT) : LibC::Int
   fun pcap_getnonblock(x0 : PcapT, x1 : LibC::Char*) : LibC::Int
@@ -145,6 +158,7 @@ lib LibPcap
   fun pcap_dump_flush(x0 : PcapDumperT) : LibC::Int
   fun pcap_dump_close(x0 : PcapDumperT)
   fun pcap_dump(x0 : UChar*, x1 : PcapPkthdr*, x2 : UChar*)
+
   struct PcapIf
     next : PcapIf*
     name : LibC::Char*
@@ -152,7 +166,9 @@ lib LibPcap
     addresses : PcapAddr*
     flags : BpfUInt32
   end
+
   type PcapIfT = PcapIf
+
   struct PcapAddr
     next : PcapAddr*
     addr : Void*
@@ -160,6 +176,7 @@ lib LibPcap
     broadaddr : Void*
     dstaddr : Void*
   end
+
   fun pcap_findalldevs(x0 : PcapIfT**, x1 : LibC::Char*) : LibC::Int
   fun pcap_freealldevs(x0 : PcapIfT*)
   fun pcap_get_selectable_fd(x0 : PcapT) : LibC::Int
