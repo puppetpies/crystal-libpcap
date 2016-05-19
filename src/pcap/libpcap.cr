@@ -1,5 +1,8 @@
 @[Link("pcap")]
 lib LibPcap
+
+  PCAP_ERRBUF_SIZE = 256
+
   fun pcap_lookupdev(x0 : LibC::Char*) : LibC::Char*
   alias X__UInt = LibC::UInt
   alias UInt = X__UInt
