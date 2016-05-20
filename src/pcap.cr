@@ -2,9 +2,6 @@ require "./pcap/*"
 
 class Pcap
   
-  #BpfUInt32 = LibPcap::BpfUInt32
-  #BpfProgram = LibPcap::BpfProgram
-  
   def lookupdev(dev : String)
     LibPcap.pcap_lookupdev(dev)
   end
@@ -31,6 +28,10 @@ class Pcap
   
   def next(handle, header)
     LibPcap.pcap_next(handle, header)
+  end
+  
+  def loop(handle, count, callback, user)
+    LibPcap.pcap_loop(handle, count, callback, user)
   end
   
 end
