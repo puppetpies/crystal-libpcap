@@ -118,10 +118,6 @@ lib LibPcap
     jt : UChar
     jf : UChar
     k : BpfUInt32
-    # code : UShort
-    # jt : UChar
-    # jf : UChar
-    # k : BpfUInt32
   end
 
   alias X__UShort = LibC::UShort
