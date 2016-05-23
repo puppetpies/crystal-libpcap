@@ -33,6 +33,11 @@ if compiled == 0
   puts applyfilter
 end
 
+loop do
+  packet = cap.next(handle, header)
+  puts String.new(packet) unless check_packet?(packet)
+end
+
 #fakevoid = Void
 #pointervoid = Proc(Pointer(UInt8), Void).new(1_u8, ::Pointer(Void).new )
 
@@ -44,7 +49,4 @@ end
 #puts callback
 #loop = cap.loop(handle, 100, callback, nil)
 
-#loop do
-#  packet = cap.next(handle, header)
-#  puts String.new(packet) unless check_packet?(packet)
-#end
+
