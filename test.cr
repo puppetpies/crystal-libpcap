@@ -33,16 +33,16 @@ if compiled == 0
   puts applyfilter
 end
 
-fakevoid = Void
-pointervoid = Proc(Pointer(UInt8), Void).new(1_u8, ::Pointer(Void).new )
+#fakevoid = Void
+#pointervoid = Proc(Pointer(UInt8), Void).new(1_u8, ::Pointer(Void).new )
 
 #must be (Pointer(UInt8), Pointer(LibPcap::PcapPkthdr), Pointer(UInt8) -> Void), 
 #not 
 #{Pointer(UInt8), Pointer(LibPcap::PcapPkthdr), (Pointer(UInt8) -> Void)}
 
-callback = Pointer(UInt8) | Pointer(LibPcap::PcapPkthdr) | pointervoid
-puts callback
-loop = cap.loop(handle, 100, callback, nil)
+#callback = Pointer(UInt8) | Pointer(LibPcap::PcapPkthdr) | pointervoid
+#puts callback
+#loop = cap.loop(handle, 100, callback, nil)
 
 #loop do
 #  packet = cap.next(handle, header)
