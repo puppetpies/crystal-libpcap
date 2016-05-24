@@ -1,0 +1,16 @@
+See http://crystal-lang.org/docs/syntax_and_semantics/c_bindings/callbacks.html Caveat: the following is all untested. 
+
+You already have defined it correctly, you can call it with a proc or a function pointer 
+
+LibPcap.pcap_loop(p, LibPcap::PcapHandler.new {|data, h, bytes| handle_bytes(bytes) }, nil) 
+LibPcap.pcap_loop(p, ->handle_bytes(LibPCap::UChar*,  LibPcap::PcapPkthdr*, LibPcap::UChar*), nil) 
+
+Note that neither variant will allow closures. However given the user argument seems to be passed through, we can use it to pass around the closure data 
+
+def pcap_loop(&callback : Slice(UInt8)) 
+  LibPcap.pcap_loop(p, LibPcap::PcapHandler.new(callback.pointer, Pointer(Void).null), callback.closure_data) 
+end 
+
+if I remember correctly, else some wrapping will be needed, passing a pointer to the callback as the user data and calling it with the help of a wrapper function passed as callback. Note that you'll likely need to keep a reference to the callback because the GC will likely not see the one stored by libpcap and clean it up erroneously. I don't see an obvious way for you to notice when you could give up that reference, but then there seems to be no way to unbind a callback so it probably doesn't matter.
+
+Hope that gives you something to play with. 
