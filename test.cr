@@ -33,10 +33,17 @@ if compiled == 0
   puts applyfilter
 end
 
-loop do
-  packet = cap.next(handle, header)
-  puts String.new(packet) unless check_packet?(packet)
-end
+#loop do
+#  packet = cap.next(handle, header)
+#  puts String.new(packet) unless check_packet?(packet)
+#end
+
+#LibPcap.pcap_loop(p, ->handle_bytes(LibPcap::UChar*,  LibPcap::PcapPkthdr*, LibPcap::UChar*), nil) 
+
+LibPcap.pcap_loop(handle, 100000, LibPcap::PcapHandler.new {|data, h, bytes| puts String.new(bytes) unless check_packet?(bytes) }, nil) 
+#cap.loop(handle) do
+
+#end
 
 #fakevoid = Void
 #pointervoid = Proc(Pointer(UInt8), Void).new(1_u8, ::Pointer(Void).new )
