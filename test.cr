@@ -52,7 +52,7 @@ oparse = OptionParser.parse! do |parser|
 end
 oparse.parse!
 
-puts "Information:"
+puts "Information:".colorize(:red)
 puts " > Interface: #{dev}".colorize(:blue)
 puts " > Netmask : #{netmask}".colorize(:blue)
 puts " > Filter : #{pcapfilter}".colorize(:blue)
@@ -69,7 +69,7 @@ unless compiled == -1
   begin
     cap.setfilter(handle, bpfprogram)
     # puts applyfilter
-    cap.loop(handle, 0, LibPcap::PcapHandler.new { |data, h, bytes| puts h }, user)
+    cap.loop(handle, 0, LibPcap::PcapHandler.new { |data, h, bytes| }, user)
   rescue
     raise "Error in capturing packet ?"
   end
