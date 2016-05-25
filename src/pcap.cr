@@ -1,13 +1,5 @@
 require "./pcap/*"
 
-class String
-  
-  def self.new(chars : LibPcap::PcapPkthdr*)
-    new(chars, LibC.strlen(chars))
-  end
-  
-end
-
 class Pcap
   
   def lookupdev(dev : String)
