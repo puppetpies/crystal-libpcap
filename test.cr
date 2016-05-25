@@ -17,20 +17,23 @@ end
 bufsize = LibPcap::PCAP_ERRBUF_SIZE
 errbuf = Pointer(UInt8).new(bufsize)
 bpfprogram = Pointer(LibPcap::BpfProgram).new
-header = Pointer(LibPcap::PcapPkthdr).new
+snaplen = 65535_u16
 user = nil
+pcapfilter = "tcp port 80"
 
 cap = Pcap.new
-v = cap.lookupdev("")
-handle = cap.open_live("wlo1", bufsize, 65000, 1, errbuf)
+handle = cap.open_live("wlo1", bufsize, snaplen, 1, errbuf)
 puts handle
-str = "tcp port 80"
 optimize = 0
 netmask = 16776960_u32 # of 0xFFFF00
-compiled = cap.compile(handle, bpfprogram, str, optimize, netmask)
+compiled = cap.compile(handle, bpfprogram, pcapfilter, optimize, netmask)
 # puts compiled
-if compiled == 0
-  applyfilter = cap.setfilter(handle, bpfprogram)
-  # puts applyfilter
-  cap.loop(handle, 100000, LibPcap::PcapHandler.new { |data, h, bytes| puts String.new(bytes) unless check_packet?(bytes) }, user)
+unless compiled == -1
+  begin
+    cap.setfilter(handle, bpfprogram)
+    # puts applyfilter
+    cap.loop(handle, 0, LibPcap::PcapHandler.new { |data, h, bytes| puts String.new(h) }, user)
+  rescue
+    raise "Error in capturing packet ?"
+  end
 end
