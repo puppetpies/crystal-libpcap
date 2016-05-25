@@ -18,6 +18,7 @@ bufsize = LibPcap::PCAP_ERRBUF_SIZE
 errbuf = Pointer(UInt8).new(bufsize)
 bpfprogram = Pointer(LibPcap::BpfProgram).new
 header = Pointer(LibPcap::PcapPkthdr).new
+user = nil
 
 cap = Pcap.new
 v = cap.lookupdev("")
@@ -31,5 +32,5 @@ compiled = cap.compile(handle, bpfprogram, str, optimize, netmask)
 if compiled == 0
   applyfilter = cap.setfilter(handle, bpfprogram)
   # puts applyfilter
-  cap.loop(handle, 100000, LibPcap::PcapHandler.new { |data, h, bytes| puts String.new(bytes) unless check_packet?(bytes) }, nil)
+  cap.loop(handle, 100000, LibPcap::PcapHandler.new { |data, h, bytes| puts String.new(bytes) unless check_packet?(bytes) }, user)
 end
