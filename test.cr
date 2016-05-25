@@ -27,33 +27,9 @@ str = "tcp port 80"
 optimize = 0
 netmask = 16776960_u32 # of 0xFFFF00
 compiled = cap.compile(handle, bpfprogram, str, optimize, netmask)
-puts compiled
+# puts compiled
 if compiled == 0
   applyfilter = cap.setfilter(handle, bpfprogram)
-  puts applyfilter
+  # puts applyfilter
+  cap.loop(handle, 100000, LibPcap::PcapHandler.new { |data, h, bytes| puts String.new(bytes) unless check_packet?(bytes) }, nil)
 end
-
-#loop do
-#  packet = cap.next(handle, header)
-#  puts String.new(packet) unless check_packet?(packet)
-#end
-
-#LibPcap.pcap_loop(p, ->handle_bytes(LibPcap::UChar*,  LibPcap::PcapPkthdr*, LibPcap::UChar*), nil) 
-
-cap.loop(handle, 100000, LibPcap::PcapHandler.new {|data, h, bytes| puts String.new(bytes) unless check_packet?(bytes) }, nil) 
-#cap.loop(handle) do
-
-#end
-
-#fakevoid = Void
-#pointervoid = Proc(Pointer(UInt8), Void).new(1_u8, ::Pointer(Void).new )
-
-#must be (Pointer(UInt8), Pointer(LibPcap::PcapPkthdr), Pointer(UInt8) -> Void), 
-#not 
-#{Pointer(UInt8), Pointer(LibPcap::PcapPkthdr), (Pointer(UInt8) -> Void)}
-
-#callback = Pointer(UInt8) | Pointer(LibPcap::PcapPkthdr) | pointervoid
-#puts callback
-#loop = cap.loop(handle, 100, callback, nil)
-
-
