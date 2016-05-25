@@ -1,5 +1,13 @@
 require "./pcap/*"
 
+class String
+  
+  def self.new(chars : LibPcap::PcapPkthdr*)
+    new(chars, LibC.strlen(chars))
+  end
+  
+end
+
 class Pcap
   
   def lookupdev(dev : String)
@@ -33,9 +41,5 @@ class Pcap
   def loop(handle, count, callback, user)
     LibPcap.pcap_loop(handle, count, callback, user)
   end
-
-#  def loop(handle ,&callback : Slice(UInt8)) 
-#    LibPcap.pcap_loop(handle, LibPcap::PcapHandler.new(callback.pointer, Pointer(Void).null), callback.closure_data) 
-#  end 
 
 end
