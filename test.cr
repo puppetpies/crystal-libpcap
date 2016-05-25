@@ -25,7 +25,7 @@ handle = cap.open_live("wlo1", bufsize, 65000, 1, errbuf)
 puts handle
 str = "tcp port 80"
 optimize = 0
-netmask = 16776960_u32 # of 0xFFFFFF
+netmask = 16776960_u32 # of 0xFFFF00
 compiled = cap.compile(handle, bpfprogram, str, optimize, netmask)
 puts compiled
 if compiled == 0
@@ -40,7 +40,7 @@ end
 
 #LibPcap.pcap_loop(p, ->handle_bytes(LibPcap::UChar*,  LibPcap::PcapPkthdr*, LibPcap::UChar*), nil) 
 
-LibPcap.pcap_loop(handle, 100000, LibPcap::PcapHandler.new {|data, h, bytes| puts String.new(bytes) unless check_packet?(bytes) }, nil) 
+cap.loop(handle, 100000, LibPcap::PcapHandler.new {|data, h, bytes| puts String.new(bytes) unless check_packet?(bytes) }, nil) 
 #cap.loop(handle) do
 
 #end
