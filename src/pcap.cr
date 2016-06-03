@@ -1,6 +1,10 @@
 require "./pcap/*"
 
+class SetfilterError < Exception; end
+
 class Pcap
+  
+  def initialize; end
   
   def lookupdev(dev : String)
     LibPcap.pcap_lookupdev(dev)
@@ -20,6 +24,17 @@ class Pcap
   
   def setfilter(handle, bpfprogram)
     LibPcap.pcap_setfilter(handle, bpfprogram)
+  end
+  
+  def applyfilter(handle, bpfprogram, str, optimize, netmask)
+    checkfilter = self.compile(handle, bpfprogram, str, optimize, netmask)
+    unless checkfilter == -1
+      begin
+        return self.setfilter(handle, bpfprogram)
+      rescue
+        raise SetfilterError.new "Please specify a valid pcap filter"
+      end
+    end
   end
   
   def open_live(dev : String, bufsize, snaplen, promisc, timeout)
