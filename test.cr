@@ -64,7 +64,7 @@ puts " > Optimize: #{optimize}".colorize(:blue)
 
 cap = Pcap.new
 handle = cap.open_live(dev, bufsize, snaplen, 1, errbuf)
-#puts handle
+# puts handle
 compiled = cap.applyfilter(handle, bpfprogram, pcapfilter, optimize, netmask)
 cap.loop(handle, 0, LibPcap::PcapHandler.new { |data, h, bytes| puts bytes }, user)
 #    data = ""

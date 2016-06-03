@@ -1,6 +1,5 @@
 @[Link("pcap")]
 lib LibPcap
-
   PCAP_ERRBUF_SIZE = 256
 
   # default snap length (maximum bytes per packet to capture)
@@ -11,23 +10,22 @@ lib LibPcap
 
   # Ethernet addresses are 6 bytes
   ETHER_ADDR_LEN = 6
-  
   # IP Flag constants
-  IP_RF = 0x8000 #           /* reserved fragment flag */
-  IP_DF = 0x4000 #           /* dont fragment flag */
-  IP_MF = 0x2000 #           /* more fragments flag */
+  IP_RF      = 0x8000 #           /* reserved fragment flag */
+  IP_DF      = 0x4000 #           /* dont fragment flag */
+  IP_MF      = 0x2000 #           /* more fragments flag */
   IP_OFFMASK = 0x1fff #      /* mask for fragmenting bits */
 
-  TH_FIN  = 0x01
-  TH_SYN  = 0x02
-  TH_RST  = 0x04
-  TH_PUSH = 0x08
-  TH_ACK  = 0x10
-  TH_URG  = 0x20
-  TH_ECE  = 0x40
-  TH_CWR  = 0x80
+  TH_FIN   = 0x01
+  TH_SYN   = 0x02
+  TH_RST   = 0x04
+  TH_PUSH  = 0x08
+  TH_ACK   = 0x10
+  TH_URG   = 0x20
+  TH_ECE   = 0x40
+  TH_CWR   = 0x80
   TH_FLAGS = [TH_FIN, TH_SYN, TH_RST, TH_ACK, TH_URG, TH_ECE, TH_CWR]
-   
+
   # Ethernet header
   struct EthernetHdr
     ether_dhost : UInt8
@@ -40,31 +38,31 @@ lib LibPcap
     ip_vhl : UInt8 #         /* version << 4 | header length >> 2 */
     ip_tos : UInt8 #                 /* type of service */
     ip_len : UInt8 #                 /* total length */
-    ip_id : UInt8 #                  /* identification */
+    ip_id : UInt8  #                  /* identification */
     ip_off : UInt8 #                 /* fragment offset field */
     ip_ttl : UInt8 #                 /* time to live */
-    ip_p : UInt8 #                   /* protocol */
+    ip_p : UInt8   #                   /* protocol */
     ip_sum : UInt8 #                /* checksum */
   end
 
-  #struct in_addr 
+  # struct in_addr
   #  property ip_src
   #  property ip_dst #  /* source and dest address */
-  #end
+  # end
 
-  struct Tcppkt 
+  struct Tcppkt
     th_sport : UInt16 #              /* source port */
     th_dport : UInt16 #               /* destination port */
-    th_seq : UInt32 #                 /* sequence number */
-    th_ack : UInt32 #                 /* acknowledgement number */
-    th_offx2  : UInt8 #               /* data offset, rsvd */
-    th_win : UInt16 #                 /* window */
-    th_sum : UInt16 #                 /* checksum */
-    th_urp : UInt16 #                 /* urgent pointer */
-    th_flags : UInt8 #                /* Also known as Control bits RFC 793 */
-   # #define TH_OFF(th)      (((th)->th_offx2 & 0xf0) >> 4)
+    th_seq : UInt32   #                 /* sequence number */
+    th_ack : UInt32   #                 /* acknowledgement number */
+    th_offx2 : UInt8  #               /* data offset, rsvd */
+    th_win : UInt16   #                 /* window */
+    th_sum : UInt16   #                 /* checksum */
+    th_urp : UInt16   #                 /* urgent pointer */
+    th_flags : UInt8  #                /* Also known as Control bits RFC 793 */
+    # #define TH_OFF(th)      (((th)->th_offx2 & 0xf0) >> 4)
   end
-  
+
   fun pcap_lookupdev(x0 : LibC::Char*) : LibC::Char*
   alias X__UInt = LibC::UInt
   alias UInt = X__UInt
