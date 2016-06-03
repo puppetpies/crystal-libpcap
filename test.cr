@@ -25,12 +25,14 @@ end
 bufsize = LibPcap::PCAP_ERRBUF_SIZE
 errbuf = Pointer(UInt8).new(bufsize)
 bpfprogram = Pointer(LibPcap::BpfProgram).new
+header = Pointer(LibPcap::PcapPkthdr).new
 snaplen = 65535_u16
 optimize = 0
 netmask = 16776960_u32 # of 0xFFFF00
 user = nil
 dev = "lo"
 pcapfilter = "tcp port 80"
+
 oparse = OptionParser.parse! do |parser|
   parser.banner = "Usage: Pcap Test Utility [options]"
 
@@ -63,14 +65,11 @@ puts " > Optimize: #{optimize}".colorize(:blue)
 cap = Pcap.new
 handle = cap.open_live(dev, bufsize, snaplen, 1, errbuf)
 #puts handle
-compiled = cap.compile(handle, bpfprogram, pcapfilter, optimize, netmask)
-# puts compiled
-unless compiled == -1
-  begin
-    cap.setfilter(handle, bpfprogram)
-    # puts applyfilter
-    cap.loop(handle, 0, LibPcap::PcapHandler.new { |data, h, bytes| }, user)
-  rescue
-    raise "Error in capturing packet ?"
-  end
-end
+compiled = cap.applyfilter(handle, bpfprogram, pcapfilter, optimize, netmask)
+cap.loop(handle, 0, LibPcap::PcapHandler.new { |data, h, bytes| puts bytes }, user)
+#    data = ""
+#    10000.times {|k|
+#      payload = cap.next(handle, header)
+#      data = "#{data}#{payload}"
+#      n.print(data) unless Pointer(UInt8).null
+#    }
