@@ -16,7 +16,7 @@ def check_packet?(packet)
   end
 end
 
-def check_class?(handleclass)
+def check_datatype?(handleclass)
   if handleclass == LibPcap::PcapT
     return true
   else
@@ -32,7 +32,7 @@ end
 
 bpfprogram = Pointer(LibPcap::BpfProgram).new
 header = Pointer(LibPcap::PcapPkthdr).new
-snaplen = 65535
+snaplen = 1500
 promisc = 1
 timeout_ms = 1000
 optimize = 0
@@ -74,10 +74,13 @@ puts " > Optimize: #{optimize}".colorize(:blue)
 begin
   cap = Pcap.new
   handle = cap.open_live(dev, snaplen, promisc, timeout_ms)
-  if check_class?(handle.class)
+  if check_datatype?(handle.class)
+    print "Capturing on Interface: ".colorize(:cyan)
+    print "#{dev}\n".colorize(:yellow)
     compiled = cap.applyfilter(handle, bpfprogram, pcapfilter, optimize, netmask)
     cap.loop(handle, packetnum, LibPcap::PcapHandler.new { |data, h, bytes| puts bytes }, user)
   else
+    abort "Invalid handle ?"
     exit
   end
 rescue UnknownError
