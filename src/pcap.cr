@@ -24,6 +24,10 @@ class Pcap
   def compile(handle, bpfprogram, str, optimize, netmask)
     LibPcap.pcap_compile(handle, bpfprogram, str, optimize, netmask)
   end
+  
+  def freecode(bpfprogram)
+    LibPcap.pcap_freecode(bpfprogram)
+  end
 
   def setfilter(handle, bpfprogram)
     LibPcap.pcap_setfilter(handle, bpfprogram)
