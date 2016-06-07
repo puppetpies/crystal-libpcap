@@ -16,6 +16,14 @@ def check_packet?(packet)
   end
 end
 
+def check_class?(handleclass)
+  if handleclass == LibPcap::PcapT
+    return true
+  else
+    return false
+  end
+end
+
 def print_stamp
   puts "Author: Brian Hood"
   puts "Homepage: https://github.com/puppetpies/crystal-libpcap\n"
@@ -62,14 +70,6 @@ puts " > User : #{user}".colorize(:blue)
 puts " > Snaplength : #{snaplen}".colorize(:blue)
 puts " > Optimize: #{optimize}".colorize(:blue)
 
-def check_class?(handleclass)
-  if handleclass == LibPcap::PcapT
-    return true
-  else
-    return false
-  end
-end
-
 begin
   cap = Pcap.new
   handle = cap.open_live(dev, snaplen, promisc, timeout_ms)
@@ -82,15 +82,3 @@ begin
 rescue UnknownError
   abort "Please raise and issue on Github!"
 end
-#p handle.class
-#if handle.class == LibPcap::PcapT
-  # puts handle
-#else
-#  exit
-#end
-#    data = ""
-#    10000.times {|k|
-#      payload = cap.next(handle, header)
-#      data = "#{data}#{payload}"
-#      n.print(data) unless Pointer(UInt8).null
-#    }
