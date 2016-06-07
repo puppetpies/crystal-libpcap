@@ -47,13 +47,18 @@ class Pcap
     end
   end
   
-  def open_live(dev : String, bufsize, snaplen, promisc, timeout)
+  def open_live(dev : String, snaplen : Int32 , promisc : Int32, timeout_ms : Int32)
+    errbuf = uninitialized UInt8[LibPcap::PCAP_ERRBUF_SIZE]
     case check_permission?
     when false
       abort "Please execute this appllication as a privileged user !"
       exit
     when true
-      LibPcap.pcap_open_live(dev, bufsize, snaplen, promisc, timeout)
+      pcap_t = LibPcap.pcap_open_live(dev, snaplen, promisc, timeout_ms, errbuf)
+      if pcap_t.null?
+        raise String.new(errbuf.to_unsafe)
+      end
+      return pcap_t
     else
       exit
     end

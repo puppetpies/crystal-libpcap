@@ -22,11 +22,11 @@ def print_stamp
   puts "Description: \n\nCrystal bindings for libpcap"
 end
 
-bufsize = LibPcap::PCAP_ERRBUF_SIZE
-errbuf = Pointer(UInt8).new(bufsize)
 bpfprogram = Pointer(LibPcap::BpfProgram).new
 header = Pointer(LibPcap::PcapPkthdr).new
-snaplen = 65535_u16
+snaplen = 65535
+promisc = 1
+timeout_ms = 1000
 optimize = 0
 netmask = 16776960_u32 # of 0xFFFF00
 user = nil
@@ -43,7 +43,7 @@ oparse = OptionParser.parse! do |parser|
     pcapfilter = f
   }
   parser.on("-s 1500", "--snaplen=1500", "\tSnap length max 65535") { |s|
-    snaplen = s
+    snaplen = s.to_i
   }
   parser.on("-h", "--help", "Show this help") { |h|
     puts parser
@@ -62,11 +62,32 @@ puts " > User : #{user}".colorize(:blue)
 puts " > Snaplength : #{snaplen}".colorize(:blue)
 puts " > Optimize: #{optimize}".colorize(:blue)
 
-cap = Pcap.new
-handle = cap.open_live(dev, bufsize, snaplen, 1, errbuf)
-# puts handle
-compiled = cap.applyfilter(handle, bpfprogram, pcapfilter, optimize, netmask)
-cap.loop(handle, 0, LibPcap::PcapHandler.new { |data, h, bytes| puts bytes }, user)
+def check_class?(handleclass)
+  if handleclass == LibPcap::PcapT
+    return true
+  else
+    return false
+  end
+end
+
+begin
+  cap = Pcap.new
+  handle = cap.open_live(dev, snaplen, promisc, timeout_ms)
+  if check_class?(handle.class)
+    compiled = cap.applyfilter(handle, bpfprogram, pcapfilter, optimize, netmask)
+    cap.loop(handle, 0, LibPcap::PcapHandler.new { |data, h, bytes| puts bytes }, user)
+  else
+    exit
+  end
+rescue UnknownError
+  abort "Please raise and issue on Github!"
+end
+#p handle.class
+#if handle.class == LibPcap::PcapT
+  # puts handle
+#else
+#  exit
+#end
 #    data = ""
 #    10000.times {|k|
 #      payload = cap.next(handle, header)
