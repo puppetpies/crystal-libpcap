@@ -40,6 +40,7 @@ netmask = 16776960_u32 # of 0xFFFF00
 user = nil
 dev = "lo"
 pcapfilter = "tcp port 80"
+packetnum = 0
 
 oparse = OptionParser.parse! do |parser|
   parser.banner = "Usage: Pcap Test Utility [options]"
@@ -75,7 +76,7 @@ begin
   handle = cap.open_live(dev, snaplen, promisc, timeout_ms)
   if check_class?(handle.class)
     compiled = cap.applyfilter(handle, bpfprogram, pcapfilter, optimize, netmask)
-    cap.loop(handle, 0, LibPcap::PcapHandler.new { |data, h, bytes| puts bytes }, user)
+    cap.loop(handle, packetnum, LibPcap::PcapHandler.new { |data, h, bytes| puts bytes }, user)
   else
     exit
   end
