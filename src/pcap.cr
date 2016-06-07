@@ -1,6 +1,8 @@
 require "./pcap/*"
 
 class SetfilterError < Exception; end
+class UnknownError < Exception; end
+class PermissionError < Exception; end
 
 class Pcap
   def initialize; end
@@ -18,7 +20,7 @@ class Pcap
   end
 
   def compile(handle, bpfprogram, str, optimize, netmask)
-    LibPcap.pcap_compile(handle, bpfprogram, str, optimize, netmask)
+    res = LibPcap.pcap_compile(handle, bpfprogram, str, optimize, netmask)
   end
 
   def setfilter(handle, bpfprogram)
@@ -36,8 +38,25 @@ class Pcap
     end
   end
 
+  def check_permission?
+    perm = %x(id -u)[0..0].to_i
+    unless perm == 0
+      return false
+    else
+      return true
+    end
+  end
+  
   def open_live(dev : String, bufsize, snaplen, promisc, timeout)
-    LibPcap.pcap_open_live(dev, bufsize, snaplen, promisc, timeout)
+    case check_permission?
+    when false
+      abort "Please execute this appllication as a privileged user !"
+      exit
+    when true
+      LibPcap.pcap_open_live(dev, bufsize, snaplen, promisc, timeout)
+    else
+      exit
+    end
   end
 
   def next(handle, header)
