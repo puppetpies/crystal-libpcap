@@ -1,7 +1,9 @@
 require "./pcap/*"
 
 class SetfilterError < Exception; end
+
 class UnknownError < Exception; end
+
 class PermissionError < Exception; end
 
 class Pcap
@@ -46,8 +48,8 @@ class Pcap
       return true
     end
   end
-  
-  def open_live(dev : String, snaplen : Int32 , promisc : Int32, timeout_ms : Int32)
+
+  def open_live(dev : String, snaplen : Int32, promisc : Int32, timeout_ms : Int32)
     errbuf = uninitialized UInt8[LibPcap::PCAP_ERRBUF_SIZE]
     case check_permission?
     when false
