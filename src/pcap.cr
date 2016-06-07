@@ -17,6 +17,10 @@ class Pcap
     LibPcap.pcap_lookupnet(dev, netp, maskp, errbuf)
   end
 
+  def close(handle)
+    LibPcap.pcap_close(handle)
+  end
+  
   def create(pointer, iface)
     LibPcap.pcap_create(pointer, iface)
   end
@@ -29,6 +33,10 @@ class Pcap
     LibPcap.pcap_freecode(bpfprogram)
   end
 
+  def geterr(handle)
+    LibPcap.pcap_geterr(handle)
+  end
+  
   def setfilter(handle, bpfprogram)
     LibPcap.pcap_setfilter(handle, bpfprogram)
   end
