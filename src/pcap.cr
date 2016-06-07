@@ -20,7 +20,7 @@ class Pcap
   end
 
   def compile(handle, bpfprogram, str, optimize, netmask)
-    res = LibPcap.pcap_compile(handle, bpfprogram, str, optimize, netmask)
+    LibPcap.pcap_compile(handle, bpfprogram, str, optimize, netmask)
   end
 
   def setfilter(handle, bpfprogram)
