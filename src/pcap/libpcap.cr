@@ -49,6 +49,21 @@ class Tcppkt
   end
 end
 
+class Udppkt
+  property udp_dport, udp_len, udp_sum, udp_sport
+  property? udp_dport : UInt16
+  property? udp_len : UInt32
+  property? udp_sum : UInt16
+  property? udp_sport : UInt16
+
+  def initialize
+    @udp_dport = 0_u16
+    @udp_len = 0
+    @udp_sum = 0_u16
+    @udp_sport = 0_u16
+  end
+end
+
 # Ethernet header
 class EthernetHdr
   property ether_dhost, ether_shost, ether_type
