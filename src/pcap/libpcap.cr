@@ -1,3 +1,68 @@
+# /* IP header */
+
+class Ippkt
+  property ip_vhl, ip_tos, ip_len, ip_id, ip_off, ip_ttl, ip_p, ip_sum
+  property? ip_vhl : UInt8
+  property? ip_tos : UInt8
+  property? ip_len : UInt8
+  property? ip_id : UInt8
+  property? ip_off : UInt8
+  property? ip_ttl : UInt8
+  property? ip_p : UInt8
+  property? ip_sum : UInt8
+
+  def initialize
+    @ip_vhl = 0_u8 # /* version << 4 | header length >> 2 */
+    @ip_tos = 0_u8 #                 /* type of service */
+    @ip_len = 0_u8 #                 /* total length */
+    @ip_id = 0_u8  #                  /* identification */
+    @ip_off = 0_u8 #                 /* fragment offset field */
+    @ip_ttl = 0_u8 #                 /* time to live */
+    @ip_p = 0_u8   #                   /* protocol */
+    @ip_sum = 0_u8 #                /* checksum */
+  end
+end
+
+class Tcppkt
+  property th_sport, th_dport, th_seq, th_ack, th_offx2, th_win, th_sum, th_urp, th_flags
+  property? th_sport : UInt16
+  property? th_dport : UInt16
+  property? th_seq : UInt32
+  property? th_ack : UInt32
+  property? th_offx2 : UInt8
+  property? th_win : UInt16
+  property? th_sum : UInt16
+  property? th_urp : UInt16
+  property? th_flags : UInt8
+
+  def initialize
+    @th_sport = 0_u16 #              /* source port */
+    @th_dport = 0_u16 #               /* destination port */
+    @th_seq = 0_u32   #                 /* sequence number */
+    @th_ack = 0_u32   #                 /* acknowledgement number */
+    @th_offx2 = 0_u8  #               /* data offset, rsvd */
+    @th_win = 0_u16   #                 /* window */
+    @th_sum = 0_u16   #                 /* checksum */
+    @th_urp = 0_u16   #                 /* urgent pointer */
+    @th_flags = 0_u8  #                /* Also known as Control bits RFC 793 */
+    # #define TH_OFF(th)      (((th)->th_offx2 & 0xf0) >> 4)
+  end
+end
+
+# Ethernet header
+class EthernetHdr
+  property ether_dhost, ether_shost, ether_type
+  property? ether_dhost : UInt8
+  property? ether_shost : UInt8
+  property? ether_type : UInt8
+
+  def initialize
+    @ether_dhost = 0_u8
+    @ether_shost = 0_u8
+    @ether_type = 0_u8
+  end
+end
+
 @[Link("pcap")]
 lib LibPcap
   PCAP_ERRBUF_SIZE = 256
@@ -25,43 +90,6 @@ lib LibPcap
   TH_ECE   = 0x40
   TH_CWR   = 0x80
   TH_FLAGS = [TH_FIN, TH_SYN, TH_RST, TH_ACK, TH_URG, TH_ECE, TH_CWR]
-
-  # Ethernet header
-  struct EthernetHdr
-    ether_dhost : UInt8
-    ether_shost : UInt8
-    ether_type : UInt8
-  end
-
-  # /* IP header */
-  struct Ippkt
-    ip_vhl : UInt8 #         /* version << 4 | header length >> 2 */
-    ip_tos : UInt8 #                 /* type of service */
-    ip_len : UInt8 #                 /* total length */
-    ip_id : UInt8  #                  /* identification */
-    ip_off : UInt8 #                 /* fragment offset field */
-    ip_ttl : UInt8 #                 /* time to live */
-    ip_p : UInt8   #                   /* protocol */
-    ip_sum : UInt8 #                /* checksum */
-  end
-
-  # struct in_addr
-  #  property ip_src
-  #  property ip_dst #  /* source and dest address */
-  # end
-
-  struct Tcppkt
-    th_sport : UInt16 #              /* source port */
-    th_dport : UInt16 #               /* destination port */
-    th_seq : UInt32   #                 /* sequence number */
-    th_ack : UInt32   #                 /* acknowledgement number */
-    th_offx2 : UInt8  #               /* data offset, rsvd */
-    th_win : UInt16   #                 /* window */
-    th_sum : UInt16   #                 /* checksum */
-    th_urp : UInt16   #                 /* urgent pointer */
-    th_flags : UInt8  #                /* Also known as Control bits RFC 793 */
-    # #define TH_OFF(th)      (((th)->th_offx2 & 0xf0) >> 4)
-  end
 
   fun pcap_lookupdev(x0 : LibC::Char*) : LibC::Char*
   alias X__UInt = LibC::UInt
