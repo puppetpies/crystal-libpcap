@@ -20,7 +20,7 @@ class Pcap
   def close(handle)
     LibPcap.pcap_close(handle)
   end
-  
+
   def create(pointer, iface)
     LibPcap.pcap_create(pointer, iface)
   end
@@ -28,7 +28,7 @@ class Pcap
   def compile(handle, bpfprogram, str, optimize, netmask)
     LibPcap.pcap_compile(handle, bpfprogram, str, optimize, netmask)
   end
-  
+
   def freecode(bpfprogram)
     LibPcap.pcap_freecode(bpfprogram)
   end
@@ -36,7 +36,7 @@ class Pcap
   def geterr(handle)
     LibPcap.pcap_geterr(handle)
   end
-  
+
   def setfilter(handle, bpfprogram)
     LibPcap.pcap_setfilter(handle, bpfprogram)
   end
