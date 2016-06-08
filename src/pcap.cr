@@ -1,3 +1,13 @@
+########################################################################
+#                                                                      #
+# Author: Brian Hood                                                   #
+# Name: crystal-libpcap                                                #
+# Email: <brianh6854@googlemail.com>                                   #
+# Description:                                                         #
+#  Crystal bindings for libpcap                                        #
+#                                                                      #
+########################################################################
+
 require "./pcap/*"
 
 class SetfilterError < Exception; end
