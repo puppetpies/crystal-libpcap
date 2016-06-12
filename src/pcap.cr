@@ -51,6 +51,10 @@ class Pcap
     LibPcap.pcap_setfilter(handle, bpfprogram)
   end
 
+  def snaplen(handle, length)
+    LibPcap.pcap_snaplen(handle, length)
+  end
+  
   def applyfilter(handle, bpfprogram, str, optimize, netmask)
     checkfilter = self.compile(handle, bpfprogram, str, optimize, netmask)
     unless checkfilter == -1
@@ -95,4 +99,14 @@ class Pcap
   def loop(handle, count, callback, user)
     LibPcap.pcap_loop(handle, count, callback, user)
   end
+  
+  def set_promisc(handle, flag)
+    if flag == true
+      flagset = 1
+    elsif flag == false
+      flagset = 0
+    end
+    LibPcap.set_promisc(handle, flagset)
+  end
+  
 end
