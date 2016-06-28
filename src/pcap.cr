@@ -54,7 +54,7 @@ class Pcap
   def snaplen(handle, length)
     LibPcap.pcap_snaplen(handle, length)
   end
-  
+
   def applyfilter(handle, bpfprogram, str, optimize, netmask)
     checkfilter = self.compile(handle, bpfprogram, str, optimize, netmask)
     unless checkfilter == -1
@@ -92,6 +92,14 @@ class Pcap
     end
   end
 
+  def file(file : LibPcap::PcapT)
+    LibPcap.pcap_file(file)
+  end
+
+  def open_offline(file : LibPcap::File, numchars)
+    LibPcap.pcap_fopen_offline(file, numchars)
+  end
+
   def next(handle, header)
     LibPcap.pcap_next(handle, header)
   end
@@ -99,7 +107,7 @@ class Pcap
   def loop(handle, count, callback, user)
     LibPcap.pcap_loop(handle, count, callback, user)
   end
-  
+
   def set_promisc(handle, flag)
     if flag == true
       flagset = 1
@@ -108,5 +116,4 @@ class Pcap
     end
     LibPcap.set_promisc(handle, flagset)
   end
-  
 end
