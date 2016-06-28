@@ -71,8 +71,35 @@ puts " > User : #{user}".colorize(:blue)
 puts " > Snaplength : #{snaplen}".colorize(:blue)
 puts " > Optimize: #{optimize}".colorize(:blue)
 
-macro byteslice(bytes)
-  s = Slice.new({{bytes}}, 255); puts s.hexdump
+macro byteslice(bytes, len)
+  s = Slice.new({{bytes}}, {{len}}); puts s.hexdump
+end
+
+macro timeformat(ts)
+  t = Time.epoch({{ts}})
+  hdr = "Date/Time: "
+  print "#{hdr.colorize(:red)} #{t.colorize(:cyan)} "
+end
+
+macro usec(usec)
+  u = {{usec}}
+  u.to_s
+  hdr = "Uniseconds: "
+  print "#{hdr.colorize(:red)} #{u.colorize(:cyan)} "
+end
+
+macro length(len)
+  l = {{len}}
+  l.to_s
+  hdr = "Length: "
+  print " #{hdr.colorize(:red)}  #{l.colorize(:cyan)} \n"
+end
+
+def gotpacket(bytes, h)
+  timeformat(h[0].ts.tv_sec)
+  usec(h[0].ts.tv_usec)
+  length(h[0].len)
+  byteslice(bytes, h[0].len)
 end
 
 begin
@@ -82,7 +109,7 @@ begin
     print "Capturing on Interface: ".colorize(:cyan)
     print "#{dev}\n".colorize(:yellow)
     compiled = cap.applyfilter(handle, bpfprogram, pcapfilter, optimize, netmask)
-    cap.loop(handle, packetnum, LibPcap::PcapHandler.new { |data, h, bytes| byteslice(bytes) }, user)
+    cap.loop(handle, packetnum, LibPcap::PcapHandler.new { |data, h, bytes| gotpacket(bytes, h) }, user)
   else
     abort "Invalid handle ?"
     exit
