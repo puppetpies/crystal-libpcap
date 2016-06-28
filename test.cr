@@ -71,6 +71,10 @@ puts " > User : #{user}".colorize(:blue)
 puts " > Snaplength : #{snaplen}".colorize(:blue)
 puts " > Optimize: #{optimize}".colorize(:blue)
 
+macro byteslice(bytes)
+  s = Slice.new({{bytes}}, 255); puts s.hexdump
+end
+
 begin
   cap = Pcap.new
   handle = cap.open_live(dev, snaplen, promisc, timeout_ms)
@@ -78,7 +82,7 @@ begin
     print "Capturing on Interface: ".colorize(:cyan)
     print "#{dev}\n".colorize(:yellow)
     compiled = cap.applyfilter(handle, bpfprogram, pcapfilter, optimize, netmask)
-    cap.loop(handle, packetnum, LibPcap::PcapHandler.new { |data, h, bytes| puts bytes }, user)
+    cap.loop(handle, packetnum, LibPcap::PcapHandler.new { |data, h, bytes| byteslice(bytes) }, user)
   else
     abort "Invalid handle ?"
     exit
