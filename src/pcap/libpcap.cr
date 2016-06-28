@@ -1,3 +1,13 @@
+# #######################################################################
+#                                                                      #
+# Author: Brian Hood                                                   #
+# Name: crystal-libpcap                                                #
+# Email: <brianh6854@googlemail.com>                                   #
+# Description:                                                         #
+#  Crystal bindings for libpcap                                        #
+#                                                                      #
+# #######################################################################
+
 @[Link("pcap")]
 lib LibPcap
   PCAP_ERRBUF_SIZE = 256
