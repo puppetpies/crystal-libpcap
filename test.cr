@@ -30,8 +30,10 @@ def print_stamp
   puts "Description: \n\nCrystal bindings for libpcap"
 end
 
-bpfprogram = Pointer(LibPcap::BpfProgram).new
-header = Pointer(LibPcap::PcapPkthdr).new
+bpf = LibPcap::BpfProgram.new
+bpfprogram = pointerof(bpf)
+pkthdr = LibPcap::PcapPkthdr.new
+header = pointerof(pkthdr)
 snaplen = 1500
 promisc = 1
 timeout_ms = 1000
@@ -72,7 +74,11 @@ puts " > Snaplength : #{snaplen}".colorize(:blue)
 puts " > Optimize: #{optimize}".colorize(:blue)
 
 macro byteslice(bytes, len)
-  s = Slice.new({{bytes}}, {{len}}); puts s.hexdump
+  begin
+    s = Slice.new({{bytes}}, {{len}}); puts s.hexdump
+  rescue
+    abort "Unable to create slice"
+  end
 end
 
 macro timeformat(ts)
@@ -96,10 +102,14 @@ macro length(len)
 end
 
 def gotpacket(bytes, h)
-  timeformat(h[0].ts.tv_sec)
-  usec(h[0].ts.tv_usec)
-  length(h[0].len)
-  byteslice(bytes, h[0].len)
+  begin
+    timeformat(h[0].ts.tv_sec)
+    usec(h[0].ts.tv_usec)
+    length(h[0].len)
+    byteslice(bytes, h[0].len)
+  rescue
+    abort "Got packet error!"
+  end
 end
 
 begin
