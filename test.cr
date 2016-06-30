@@ -32,7 +32,7 @@ end
 
 bpf = LibPcap::BpfProgram.new
 bpfprogram = pointerof(bpf)
-pkthdr = LibPcap::PcapPkthdr.new
+pkthdr = LibPcap::PcapPkthdr
 header = pointerof(pkthdr)
 snaplen = 1500
 promisc = 1
@@ -112,6 +112,12 @@ def gotpacket(bytes, h)
   end
 end
 
+def error(msg : String)
+  print "ERROR: ".colorize(:red)
+  abort "#{msg}"
+end
+
+GC.malloc(1_000_000)
 begin
   cap = Pcap.new
   handle = cap.open_live(dev, snaplen, promisc, timeout_ms)
@@ -119,11 +125,15 @@ begin
     print "Capturing on Interface: ".colorize(:cyan)
     print "#{dev}\n".colorize(:yellow)
     compiled = cap.applyfilter(handle, bpfprogram, pcapfilter, optimize, netmask)
-    cap.loop(handle, packetnum, LibPcap::PcapHandler.new { |data, h, bytes| gotpacket(bytes, h) }, user)
+    if compiled == 0
+      cap.loop(handle, packetnum, LibPcap::PcapHandler.new { |data, h, bytes| gotpacket(bytes, h) }, user)
+    else
+      error("Please use a valid pcap filter expression")
+    end
   else
-    abort "Invalid handle ?"
+    error("Invalid handle ?")
     exit
   end
 rescue UnknownError
-  abort "Please raise and issue on Github!"
+  error("Please raise and issue on Github!")
 end
